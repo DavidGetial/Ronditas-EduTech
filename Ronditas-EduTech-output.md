@@ -3,8 +3,8 @@
 ## 📊 Project Information
 
 - **Project Name**: `Ronditas-EduTech`
-- **Generated On**: 2026-06-09 00:31:39 (America/Bogota / GMT-05:00)
-- **Total Files Processed**: 71
+- **Generated On**: 2026-06-09 03:19:38 (America/Bogota / GMT-05:00)
+- **Total Files Processed**: 74
 - **Export Tool**: Easy Whole Project to Single Text File for LLMs v1.1.0
 - **Tool Author**: Jota / José Guilherme Pandolfi
 
@@ -78,23 +78,26 @@
 │   │   │   │   ├── 📄 tooltip.tsx (1.85 KB)
 │   │   │   │   ├── 📄 use-mobile.ts (585 B)
 │   │   │   │   └── 📄 utils.ts (169 B)
-│   │   │   ├── 📄 Login.tsx (4.93 KB)
+│   │   │   ├── 📄 Login.tsx (7.21 KB)
 │   │   │   ├── 📄 StudentDashboard.tsx (14.86 KB)
-│   │   │   └── 📄 TeacherDashboard.tsx (18 KB)
-│   │   └── 📄 App.tsx (838 B)
+│   │   │   ├── 📄 TeacherDashboard.tsx (18 KB)
+│   │   │   └── 📄 TestSupabase.tsx (724 B)
+│   │   └── 📄 App.tsx (1.74 KB)
 │   ├── 📁 styles/
 │   │   ├── 📄 fonts.css (204 B)
 │   │   ├── 📄 globals.css
 │   │   ├── 📄 index.css (72 B)
 │   │   ├── 📄 tailwind.css (98 B)
 │   │   └── 📄 theme.css (5.1 KB)
-│   └── 📄 main.tsx (183 B)
+│   ├── 📄 env.d.ts (210 B)
+│   ├── 📄 main.tsx (183 B)
+│   └── 📄 supabaseClient.ts (236 B)
 ├── 📄 ATTRIBUTIONS.md (290 B)
 ├── 📄 default_shadcn_theme.css (4.22 KB)
 ├── 📄 index.html (731 B)
 ├── 📄 LICENSE (1.06 KB)
-├── 📄 package-lock.json (471.49 KB)
-├── 📄 package.json (2.54 KB)
+├── 📄 package-lock.json (473.03 KB)
+├── 📄 package.json (2.58 KB)
 ├── 📄 pnpm-workspace.yaml (17 B)
 ├── 📄 postcss.config.mjs (460 B)
 ├── 📄 README.md (1.1 KB)
@@ -158,13 +161,16 @@
 - [📄 src/app/components/Login.tsx](#📄-src-app-components-login-tsx)
 - [📄 src/app/components/StudentDashboard.tsx](#📄-src-app-components-studentdashboard-tsx)
 - [📄 src/app/components/TeacherDashboard.tsx](#📄-src-app-components-teacherdashboard-tsx)
+- [📄 src/app/components/TestSupabase.tsx](#📄-src-app-components-testsupabase-tsx)
 - [📄 src/app/App.tsx](#📄-src-app-app-tsx)
 - [📄 src/styles/fonts.css](#📄-src-styles-fonts-css)
 - [📄 src/styles/globals.css](#📄-src-styles-globals-css)
 - [📄 src/styles/index.css](#📄-src-styles-index-css)
 - [📄 src/styles/tailwind.css](#📄-src-styles-tailwind-css)
 - [📄 src/styles/theme.css](#📄-src-styles-theme-css)
+- [📄 src/env.d.ts](#📄-src-env-d-ts)
 - [📄 src/main.tsx](#📄-src-main-tsx)
+- [📄 src/supabaseClient.ts](#📄-src-supabaseclient-ts)
 - [📄 ATTRIBUTIONS.md](#📄-attributions-md)
 - [📄 default_shadcn_theme.css](#📄-default-shadcn-theme-css)
 - [📄 index.html](#📄-index-html)
@@ -180,20 +186,20 @@
 
 | Metric | Count |
 |--------|-------|
-| Total Files | 71 |
+| Total Files | 74 |
 | Total Directories | 8 |
-| Text Files | 68 |
+| Text Files | 71 |
 | Binary Files | 3 |
-| Total Size | 1009.61 KB |
+| Total Size | 1015.54 KB |
 
 ### 📄 File Types Distribution
 
 | Extension | Count |
 |-----------|-------|
-| `.tsx` | 52 |
+| `.tsx` | 53 |
 | `.css` | 6 |
+| `.ts` | 5 |
 | `.md` | 3 |
-| `.ts` | 3 |
 | `.json` | 2 |
 | `.png` | 1 |
 | `.html` | 1 |
@@ -6510,39 +6516,87 @@ export function cn(...inputs: ClassValue[]) {
 ### <a id="📄-src-app-components-login-tsx"></a>📄 `src/app/components/Login.tsx`
 
 **File Info:**
-- **Size**: 4.93 KB
+- **Size**: 7.21 KB
 - **Extension**: `.tsx`
 - **Language**: `typescript`
 - **Location**: `src/app/components/Login.tsx`
 - **Relative Path**: `src/app/components`
 - **Created**: 2026-06-08 17:01:46 (America/Bogota / GMT-05:00)
-- **Modified**: 2026-06-09 00:31:39 (America/Bogota / GMT-05:00)
-- **MD5**: `65b1d467e3c53bc0312dc7078955e777`
-- **SHA256**: `250e93aa7027b47d1f73ee95ae0877f82116c2e6f02c3ff4fdd10a4c7a7a5a4c`
+- **Modified**: 2026-06-09 03:19:38 (America/Bogota / GMT-05:00)
+- **MD5**: `f11be3fb6150a7903fa49c873d4469cc`
+- **SHA256**: `d604efe11ad30f6e96a6f1ffd6b9ea6d370b8d7a8f74de5e8a21af24eb7ccb11`
 - **Encoding**: UTF-8
 
 **File code content:**
 
 ```typescript
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LogIn, GraduationCap, School } from "lucide-react";
+import { supabase } from "../../supabaseClient";
 
 interface LoginProps {
-  onLogin: (role: "student" | "teacher") => void;
+  onLogin: (
+    role: "student" | "teacher",
+    nombre: string,
+    apellido: string,
+    grado: string,
+    password: string,
+  ) => void;
 }
 
 export default function Login({ onLogin }: LoginProps) {
-  const [username, setUsername] = useState("");
+  const [grado, setGrado] = useState("");
+  const [nombreCompleto, setNombreCompleto] = useState("");
   const [password, setPassword] = useState("");
   const [selectedRole, setSelectedRole] = useState<"student" | "teacher">(
     "student",
   );
+  const [gradosDisponibles, setGradosDisponibles] = useState<string[]>([]);
+  const [estudiantes, setEstudiantes] = useState<string[]>([]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (username && password) {
-      onLogin(selectedRole);
+  // Al cargar, traer todos los grados únicos desde Supabase
+  useEffect(() => {
+    const fetchGrados = async () => {
+      const { data, error } = await supabase.from("usuarios").select("grado");
+
+      if (error) {
+        console.error("Error cargando grados:", error.message);
+      } else {
+        const lista = [...new Set(data.map((u: any) => u.grado))];
+        setGradosDisponibles(lista);
+      }
+    };
+
+    fetchGrados();
+  }, []);
+
+  // Cuando cambia el grado, traer estudiantes de ese grado
+  useEffect(() => {
+  const fetchGrados = async () => {
+    const { data, error } = await supabase
+      .from("usuarios")
+      .select("*"); // traer todo
+
+    if (error) {
+      console.error("Error cargando usuarios:", error.message);
+    } else {
+      console.log("Usuarios encontrados:", data);
+      const lista = [...new Set(data.map((u: any) => u.grado))];
+      setGradosDisponibles(lista);
     }
+  };
+
+  fetchGrados();
+}, []);
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const nombreCompletoFinal = nombreCompleto; // ya viene de Supabase
+
+    const { data, error } = await supabase.from("usuarios").select("*");
+    console.log("Usuarios:", data);
   };
 
   return (
@@ -6557,7 +6611,6 @@ export default function Login({ onLogin }: LoginProps) {
               className="w-28 h-35 object-cover rounded-full"
             />
           </div>
-
           <h1 className="text-4xl font-bold text-blue-600 mb-2">
             Ronditas EduTech
           </h1>
@@ -6600,26 +6653,50 @@ export default function Login({ onLogin }: LoginProps) {
               </div>
             </div>
 
-            {/* Campo de Usuario */}
+            {/* Selector de Grado */}
             <div>
-              <label
-                htmlFor="username"
-                className="block text-sm mb-2 text-gray-700"
-              >
-                Usuario
-              </label>
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Ingresa tu usuario"
-                className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-600 focus:outline-none transition-colors bg-white"
+              <label className="block text-sm mb-2 text-gray-700">Grado</label>
+              <select
+                value={grado}
+                onChange={(e) => setGrado(e.target.value)}
                 required
-              />
+              >
+                <option value="">Selecciona tu grado</option>
+                {gradosDisponibles.length > 0 ? (
+                  gradosDisponibles.map((g) => (
+                    <option key={g} value={g}>
+                      {g}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>No hay grados disponibles</option>
+                )}
+              </select>
             </div>
 
-            {/* Campo de Contraseña */}
+            {/* Selector de Nombre y Apellido */}
+            {grado && (
+              <div>
+                <label className="block text-sm mb-2 text-gray-700">
+                  Nombre y Apellido
+                </label>
+                <select
+                  value={nombreCompleto}
+                  onChange={(e) => setNombreCompleto(e.target.value)}
+                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-600 focus:outline-none transition-colors bg-white"
+                  required
+                >
+                  <option value="">Selecciona tu nombre</option>
+                  {estudiantes.map((est) => (
+                    <option key={est} value={est}>
+                      {est}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Campo Contraseña */}
             <div>
               <label
                 htmlFor="password"
@@ -7469,56 +7546,141 @@ export default function TeacherDashboard({ onLogout }: TeacherDashboardProps) {
 
 ---
 
+### <a id="📄-src-app-components-testsupabase-tsx"></a>📄 `src/app/components/TestSupabase.tsx`
+
+**File Info:**
+- **Size**: 724 B
+- **Extension**: `.tsx`
+- **Language**: `typescript`
+- **Location**: `src/app/components/TestSupabase.tsx`
+- **Relative Path**: `src/app/components`
+- **Created**: 2026-06-09 01:05:00 (America/Bogota / GMT-05:00)
+- **Modified**: 2026-06-09 02:52:44 (America/Bogota / GMT-05:00)
+- **MD5**: `27b84f04a2799dddc47a30f55602f197`
+- **SHA256**: `36f94d066f479b629cdf54cbf05b9fe15b02278875f559776cc7e821913419a1`
+- **Encoding**: UTF-8
+
+**File code content:**
+
+```typescript
+import { useEffect } from "react";
+import { supabase } from "../../supabaseClient";
+
+export default function TestSupabase() {
+  useEffect(() => {
+    const testConnection = async () => {
+      const { data, error } = await supabase.from("usuarios").select("*");
+
+      if (error) {
+        console.error("❌ Error de conexión:", error.message);
+      } else {
+        console.log("✅ Conexión exitosa. Registros encontrados:", data);
+      }
+    };
+
+    testConnection();
+  }, []);
+
+  return (
+    <div className="p-4">
+      <h1 className="text-xl font-bold">Prueba de Supabase</h1>
+      <p>Revisa la consola del navegador (F12 → Console) para ver todos los registros.</p>
+    </div>
+  );
+}
+
+```
+
+---
+
 ### <a id="📄-src-app-app-tsx"></a>📄 `src/app/App.tsx`
 
 **File Info:**
-- **Size**: 838 B
+- **Size**: 1.74 KB
 - **Extension**: `.tsx`
 - **Language**: `typescript`
 - **Location**: `src/app/App.tsx`
 - **Relative Path**: `src/app`
 - **Created**: 2026-06-08 17:01:46 (America/Bogota / GMT-05:00)
-- **Modified**: 2026-06-08 17:12:00 (America/Bogota / GMT-05:00)
-- **MD5**: `60e001dae70af6e7b572efb9f3de70c6`
-- **SHA256**: `dd5b5d5c6b89dff785b48fb29c82cace9a4e896069823cc6fa781f030bd460a1`
-- **Encoding**: ASCII
+- **Modified**: 2026-06-09 02:56:15 (America/Bogota / GMT-05:00)
+- **MD5**: `a5f1bf58b52f3d9c5073482d4ff72e80`
+- **SHA256**: `ddb22abbce7ca69bd8f0956e2ea3327e1af6031db4a26a8189ab38c364d6adee`
+- **Encoding**: UTF-8
 
 **File code content:**
 
 ```typescript
-import { useState } from 'react';
-import Login from './components/Login';
-import StudentDashboard from './components/StudentDashboard';
-import TeacherDashboard from './components/TeacherDashboard';
+import { useState } from "react";
+import Login from "./components/Login";
+import StudentDashboard from "./components/StudentDashboard";
+import TeacherDashboard from "./components/TeacherDashboard";
+import { supabase } from "../supabaseClient";
+import TestSupabase from "./components/TestSupabase";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userRole, setUserRole] = useState<'student' | 'teacher' | null>(null);
+  const [userRole, setUserRole] = useState<"student" | "teacher" | null>(null);
 
-  const handleLogin = (role: 'student' | 'teacher') => {
-    setUserRole(role);
-    setIsLoggedIn(true);
+  // Manejo de login
+  const handleLogin = async (
+    role: "student" | "teacher",
+    nombre: string,
+    apellido: string,
+    grado: string,
+    password: string,
+  ) => {
+    const { data, error } = await supabase
+      .from("usuarios")
+      .select("*")
+      .eq("nombre", nombre)
+      .eq("apellido", apellido)
+      .eq("grado", grado)
+      .eq("password", password)
+      .eq("rol", role)
+      .single();
+
+    if (error || !data) {
+      alert("Usuario o contraseña incorrectos");
+    } else {
+      console.log("✅ Login exitoso:", data);
+      setUserRole(role);
+      setIsLoggedIn(true);
+    }
   };
 
-  const handleLogout = () => {
+  // Manejo de logout
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     setIsLoggedIn(false);
     setUserRole(null);
   };
 
+  // Si no está logueado → mostrar Login + TestSupabase
   if (!isLoggedIn) {
-    return <Login onLogin={handleLogin} />;
+    return (
+      <>
+        <TestSupabase />
+        <Login
+          onLogin={(role, nombre, apellido, grado, password) =>
+            handleLogin(role, nombre, apellido, grado, password)
+          }
+        />
+      </>
+    );
   }
 
-  if (userRole === 'student') {
+  // Dashboards según rol
+  if (userRole === "student") {
     return <StudentDashboard onLogout={handleLogout} />;
   }
 
-  if (userRole === 'teacher') {
+  if (userRole === "teacher") {
     return <TeacherDashboard onLogout={handleLogout} />;
   }
 
   return null;
 }
+
 ```
 
 ---
@@ -7826,6 +7988,38 @@ body {
 
 ---
 
+### <a id="📄-src-env-d-ts"></a>📄 `src/env.d.ts`
+
+**File Info:**
+- **Size**: 210 B
+- **Extension**: `.ts`
+- **Language**: `typescript`
+- **Location**: `src/env.d.ts`
+- **Relative Path**: `src`
+- **Created**: 2026-06-09 00:43:53 (America/Bogota / GMT-05:00)
+- **Modified**: 2026-06-09 03:19:00 (America/Bogota / GMT-05:00)
+- **MD5**: `be608d4208d94c4899d958a142720d45`
+- **SHA256**: `a7fd615e5f4b71297567c64ec5273c175e5a848abe5fd6c01a542b7ed9da9876`
+- **Encoding**: ASCII
+
+**File code content:**
+
+```typescript
+/// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  readonly VITE_SUPABASE_URL: string;
+  readonly VITE_SUPABASE_KEY: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
+```
+
+---
+
 ### <a id="📄-src-main-tsx"></a>📄 `src/main.tsx`
 
 **File Info:**
@@ -7850,6 +8044,34 @@ body {
 
   createRoot(document.getElementById("root")!).render(<App />);
   
+```
+
+---
+
+### <a id="📄-src-supabaseclient-ts"></a>📄 `src/supabaseClient.ts`
+
+**File Info:**
+- **Size**: 236 B
+- **Extension**: `.ts`
+- **Language**: `typescript`
+- **Location**: `src/supabaseClient.ts`
+- **Relative Path**: `src`
+- **Created**: 2026-06-09 00:35:09 (America/Bogota / GMT-05:00)
+- **Modified**: 2026-06-09 03:05:55 (America/Bogota / GMT-05:00)
+- **MD5**: `5fbc8f68250fa71941983201e35528b3`
+- **SHA256**: `b43272a45f9e8b098537556194afd4bcddc331f62430c9c82f3868336efe0660`
+- **Encoding**: ASCII
+
+**File code content:**
+
+```typescript
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
+
+export const supabase = createClient(supabaseUrl, supabaseKey);
+
 ```
 
 ---
@@ -8067,15 +8289,15 @@ This Figma Make file includes photos from [Unsplash](https://unsplash.com) used 
 ### <a id="📄-package-lock-json"></a>📄 `package-lock.json`
 
 **File Info:**
-- **Size**: 471.49 KB
+- **Size**: 473.03 KB
 - **Extension**: `.json`
 - **Language**: `json`
 - **Location**: `package-lock.json`
 - **Relative Path**: `root`
 - **Created**: 2026-06-08 17:37:15 (America/Bogota / GMT-05:00)
-- **Modified**: 2026-06-08 17:37:15 (America/Bogota / GMT-05:00)
-- **MD5**: `b70fb011750fc8ee43a7a1034bf8688a`
-- **SHA256**: `cddefb9d77e445038c970c76664a12952ad4a4edd64d87fa4b798072febdde58`
+- **Modified**: 2026-06-09 00:34:39 (America/Bogota / GMT-05:00)
+- **MD5**: `41dd76db83936c11de037234f4afc167`
+- **SHA256**: `a16a626284b79fbd3b027c4e3f6ceedf7e1ecceb6995641fef3a319f02fa01b4`
 - **Encoding**: ASCII
 
 **File code content:**
@@ -8122,6 +8344,7 @@ This Figma Make file includes photos from [Unsplash](https://unsplash.com) used 
         "@radix-ui/react-toggle": "1.1.2",
         "@radix-ui/react-toggle-group": "1.1.2",
         "@radix-ui/react-tooltip": "1.1.8",
+        "@supabase/supabase-js": "^2.108.0",
         "canvas-confetti": "1.9.4",
         "class-variance-authority": "0.7.1",
         "clsx": "2.1.1",
@@ -13180,6 +13403,90 @@ This Figma Make file includes photos from [Unsplash](https://unsplash.com) used 
       "integrity": "sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==",
       "license": "MIT"
     },
+    "node_modules/@supabase/auth-js": {
+      "version": "2.108.0",
+      "resolved": "https://registry.npmjs.org/@supabase/auth-js/-/auth-js-2.108.0.tgz",
+      "integrity": "sha512-0CzVGVqHfNOhRQVEcAmu58Mex2Ce0zL3aGfyV+iFQjTK6OntLK/hLCLr/VDRX0E8/2CdsiY99L7fZ/8ys/op4w==",
+      "license": "MIT",
+      "dependencies": {
+        "tslib": "2.8.1"
+      },
+      "engines": {
+        "node": ">=20.0.0"
+      }
+    },
+    "node_modules/@supabase/functions-js": {
+      "version": "2.108.0",
+      "resolved": "https://registry.npmjs.org/@supabase/functions-js/-/functions-js-2.108.0.tgz",
+      "integrity": "sha512-lqEGDzT7QBUuKYzi5lHpV/XecXT9wikzcbXMbFo6krNpSDynD1sHM8wcsfB/BAqa4NkFuy3vF4JCV8MeakV8IQ==",
+      "license": "MIT",
+      "dependencies": {
+        "tslib": "2.8.1"
+      },
+      "engines": {
+        "node": ">=20.0.0"
+      }
+    },
+    "node_modules/@supabase/phoenix": {
+      "version": "0.4.2",
+      "resolved": "https://registry.npmjs.org/@supabase/phoenix/-/phoenix-0.4.2.tgz",
+      "integrity": "sha512-YSAGnmDAfuleFCVt3CeurQZAhxRfXWeZIIkwp7NhYzQ1UwW6ePSnzsFAiUm/mbCkfoCf70QQHKW/K6RKh52a4A==",
+      "license": "MIT"
+    },
+    "node_modules/@supabase/postgrest-js": {
+      "version": "2.108.0",
+      "resolved": "https://registry.npmjs.org/@supabase/postgrest-js/-/postgrest-js-2.108.0.tgz",
+      "integrity": "sha512-8AwTkPqowDYv/qh016CyXeZ3Ukpw6NHyfqc7DWV4afLR2hAiapf3zRKV2ZLG+//T1LK84HrR6X8VBwfgHWmNyw==",
+      "license": "MIT",
+      "dependencies": {
+        "tslib": "2.8.1"
+      },
+      "engines": {
+        "node": ">=20.0.0"
+      }
+    },
+    "node_modules/@supabase/realtime-js": {
+      "version": "2.108.0",
+      "resolved": "https://registry.npmjs.org/@supabase/realtime-js/-/realtime-js-2.108.0.tgz",
+      "integrity": "sha512-N3xR0u7TNr+c5wuLSU60rcfu/H/8N0WBs7iHWwjI/NxKwY3XWSyLUbpbpU8bzmL0dA/Gk9Mupri8mxKUXBW+iw==",
+      "license": "MIT",
+      "dependencies": {
+        "@supabase/phoenix": "^0.4.2",
+        "tslib": "2.8.1"
+      },
+      "engines": {
+        "node": ">=20.0.0"
+      }
+    },
+    "node_modules/@supabase/storage-js": {
+      "version": "2.108.0",
+      "resolved": "https://registry.npmjs.org/@supabase/storage-js/-/storage-js-2.108.0.tgz",
+      "integrity": "sha512-zMYQmh87CId7d8i/1FIfv4fMDcXPutmIJSpoY58GLXi7M266MNzxWGNabDk4i555Oj1Nqtsu2i3Qo3rpWUXO6A==",
+      "license": "MIT",
+      "dependencies": {
+        "iceberg-js": "^0.8.1",
+        "tslib": "2.8.1"
+      },
+      "engines": {
+        "node": ">=20.0.0"
+      }
+    },
+    "node_modules/@supabase/supabase-js": {
+      "version": "2.108.0",
+      "resolved": "https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-2.108.0.tgz",
+      "integrity": "sha512-AjPoimM9MZLZbddnlDBGmpZ/Tas1dNcJvuZy/VD1AfmrjBC8J2RSw6UOqR4ISLLlEioOLca/5t1crFnAxa0wRQ==",
+      "license": "MIT",
+      "dependencies": {
+        "@supabase/auth-js": "2.108.0",
+        "@supabase/functions-js": "2.108.0",
+        "@supabase/postgrest-js": "2.108.0",
+        "@supabase/realtime-js": "2.108.0",
+        "@supabase/storage-js": "2.108.0"
+      },
+      "engines": {
+        "node": ">=20.0.0"
+      }
+    },
     "node_modules/@tailwindcss/node": {
       "version": "4.1.12",
       "resolved": "https://registry.npmjs.org/@tailwindcss/node/-/node-4.1.12.tgz",
@@ -14766,28 +15073,6 @@ This Figma Make file includes photos from [Unsplash](https://unsplash.com) used 
       },
       "funding": {
         "url": "https://github.com/sponsors/sindresorhus"
-      }
-    },
-    "node_modules/code2prompt/node_modules/ws": {
-      "version": "8.21.0",
-      "resolved": "https://registry.npmjs.org/ws/-/ws-8.21.0.tgz",
-      "integrity": "sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==",
-      "extraneous": true,
-      "license": "MIT",
-      "engines": {
-        "node": ">=10.0.0"
-      },
-      "peerDependencies": {
-        "bufferutil": "^4.0.1",
-        "utf-8-validate": ">=5.0.2"
-      },
-      "peerDependenciesMeta": {
-        "bufferutil": {
-          "optional": true
-        },
-        "utf-8-validate": {
-          "optional": true
-        }
       }
     },
     "node_modules/collapse-white-space": {
@@ -16908,6 +17193,15 @@ This Figma Make file includes photos from [Unsplash](https://unsplash.com) used 
         "ms": "^2.0.0"
       }
     },
+    "node_modules/iceberg-js": {
+      "version": "0.8.1",
+      "resolved": "https://registry.npmjs.org/iceberg-js/-/iceberg-js-0.8.1.tgz",
+      "integrity": "sha512-1dhVQZXhcHje7798IVM+xoo/1ZdVfzOMIc8/rgVSijRK38EDqOJoGula9N/8ZI5RD8QTxNQtK/Gozpr+qUqRRA==",
+      "license": "MIT",
+      "engines": {
+        "node": ">=20.0.0"
+      }
+    },
     "node_modules/ieee754": {
       "version": "1.2.1",
       "resolved": "https://registry.npmjs.org/ieee754/-/ieee754-1.2.1.tgz",
@@ -17466,28 +17760,6 @@ This Figma Make file includes photos from [Unsplash](https://unsplash.com) used 
         }
       }
     },
-    "node_modules/langbase/node_modules/ws": {
-      "version": "8.21.0",
-      "resolved": "https://registry.npmjs.org/ws/-/ws-8.21.0.tgz",
-      "integrity": "sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==",
-      "extraneous": true,
-      "license": "MIT",
-      "engines": {
-        "node": ">=10.0.0"
-      },
-      "peerDependencies": {
-        "bufferutil": "^4.0.1",
-        "utf-8-validate": ">=5.0.2"
-      },
-      "peerDependenciesMeta": {
-        "bufferutil": {
-          "optional": true
-        },
-        "utf-8-validate": {
-          "optional": true
-        }
-      }
-    },
     "node_modules/lightningcss": {
       "version": "1.30.1",
       "resolved": "https://registry.npmjs.org/lightningcss/-/lightningcss-1.30.1.tgz",
@@ -17843,28 +18115,6 @@ This Figma Make file includes photos from [Unsplash](https://unsplash.com) used 
       },
       "funding": {
         "url": "https://github.com/sponsors/sindresorhus"
-      }
-    },
-    "node_modules/llm-api/node_modules/ws": {
-      "version": "8.21.0",
-      "resolved": "https://registry.npmjs.org/ws/-/ws-8.21.0.tgz",
-      "integrity": "sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==",
-      "extraneous": true,
-      "license": "MIT",
-      "engines": {
-        "node": ">=10.0.0"
-      },
-      "peerDependencies": {
-        "bufferutil": "^4.0.1",
-        "utf-8-validate": ">=5.0.2"
-      },
-      "peerDependenciesMeta": {
-        "bufferutil": {
-          "optional": true
-        },
-        "utf-8-validate": {
-          "optional": true
-        }
       }
     },
     "node_modules/lodash": {
@@ -21399,15 +21649,15 @@ This Figma Make file includes photos from [Unsplash](https://unsplash.com) used 
 ### <a id="📄-package-json"></a>📄 `package.json`
 
 **File Info:**
-- **Size**: 2.54 KB
+- **Size**: 2.58 KB
 - **Extension**: `.json`
 - **Language**: `json`
 - **Location**: `package.json`
 - **Relative Path**: `root`
 - **Created**: 2026-06-08 17:01:46 (America/Bogota / GMT-05:00)
-- **Modified**: 2026-06-08 17:37:14 (America/Bogota / GMT-05:00)
-- **MD5**: `c311f3eb1c8af4d4bcfba552ee225255`
-- **SHA256**: `06615b17c3a8ef385422295e1431d8066068995d1c400d51b7287ef50b98a0de`
+- **Modified**: 2026-06-09 00:34:39 (America/Bogota / GMT-05:00)
+- **MD5**: `150cf2800c985890d4076b23e528be84`
+- **SHA256**: `3740cbf0b745cc59f359d1fd2ac61eedee3424159e690d6bda8d81cc4e2fe2a4`
 - **Encoding**: ASCII
 
 **File code content:**
@@ -21454,6 +21704,7 @@ This Figma Make file includes photos from [Unsplash](https://unsplash.com) used 
     "@radix-ui/react-toggle": "1.1.2",
     "@radix-ui/react-toggle-group": "1.1.2",
     "@radix-ui/react-tooltip": "1.1.8",
+    "@supabase/supabase-js": "^2.108.0",
     "canvas-confetti": "1.9.4",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",

@@ -1,22 +1,70 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LogIn, GraduationCap, School } from "lucide-react";
+import { supabase } from "../../supabaseClient";
 
 interface LoginProps {
-  onLogin: (role: "student" | "teacher") => void;
+  onLogin: (
+    role: "student" | "teacher",
+    nombre: string,
+    apellido: string,
+    grado: string,
+    password: string,
+  ) => void;
 }
 
 export default function Login({ onLogin }: LoginProps) {
-  const [username, setUsername] = useState("");
+  const [grado, setGrado] = useState("");
+  const [nombreCompleto, setNombreCompleto] = useState("");
   const [password, setPassword] = useState("");
   const [selectedRole, setSelectedRole] = useState<"student" | "teacher">(
     "student",
   );
+  const [gradosDisponibles, setGradosDisponibles] = useState<string[]>([]);
+  const [estudiantes, setEstudiantes] = useState<string[]>([]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (username && password) {
-      onLogin(selectedRole);
+  // Al cargar, traer todos los grados únicos desde Supabase
+  useEffect(() => {
+    const fetchGrados = async () => {
+      const { data, error } = await supabase.from("usuarios").select("grado");
+
+      if (error) {
+        console.error("Error cargando grados:", error.message);
+      } else {
+        const lista = [...new Set(data.map((u: any) => u.grado))];
+        setGradosDisponibles(lista);
+      }
+    };
+
+    fetchGrados();
+  }, []);
+
+  // Cuando cambia el grado, traer estudiantes de ese grado
+  useEffect(() => {
+  const fetchGrados = async () => {
+    const { data, error } = await supabase
+      .from("usuarios")
+      .select("*"); // traer todo
+
+    if (error) {
+      console.error("Error cargando usuarios:", error.message);
+    } else {
+      console.log("Usuarios encontrados:", data);
+      const lista = [...new Set(data.map((u: any) => u.grado))];
+      setGradosDisponibles(lista);
     }
+  };
+
+  fetchGrados();
+}, []);
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const nombreCompletoFinal = nombreCompleto; // ya viene de Supabase
+
+    const { data, error } = await supabase.from("usuarios").select("*");
+    console.log("Usuarios:", data);
   };
 
   return (
@@ -31,7 +79,6 @@ export default function Login({ onLogin }: LoginProps) {
               className="w-28 h-35 object-cover rounded-full"
             />
           </div>
-
           <h1 className="text-4xl font-bold text-blue-600 mb-2">
             Ronditas EduTech
           </h1>
@@ -74,26 +121,50 @@ export default function Login({ onLogin }: LoginProps) {
               </div>
             </div>
 
-            {/* Campo de Usuario */}
+            {/* Selector de Grado */}
             <div>
-              <label
-                htmlFor="username"
-                className="block text-sm mb-2 text-gray-700"
-              >
-                Usuario
-              </label>
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Ingresa tu usuario"
-                className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-600 focus:outline-none transition-colors bg-white"
+              <label className="block text-sm mb-2 text-gray-700">Grado</label>
+              <select
+                value={grado}
+                onChange={(e) => setGrado(e.target.value)}
                 required
-              />
+              >
+                <option value="">Selecciona tu grado</option>
+                {gradosDisponibles.length > 0 ? (
+                  gradosDisponibles.map((g) => (
+                    <option key={g} value={g}>
+                      {g}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>No hay grados disponibles</option>
+                )}
+              </select>
             </div>
 
-            {/* Campo de Contraseña */}
+            {/* Selector de Nombre y Apellido */}
+            {grado && (
+              <div>
+                <label className="block text-sm mb-2 text-gray-700">
+                  Nombre y Apellido
+                </label>
+                <select
+                  value={nombreCompleto}
+                  onChange={(e) => setNombreCompleto(e.target.value)}
+                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-600 focus:outline-none transition-colors bg-white"
+                  required
+                >
+                  <option value="">Selecciona tu nombre</option>
+                  {estudiantes.map((est) => (
+                    <option key={est} value={est}>
+                      {est}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Campo Contraseña */}
             <div>
               <label
                 htmlFor="password"
