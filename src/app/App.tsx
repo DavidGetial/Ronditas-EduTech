@@ -2,59 +2,48 @@ import { useState } from "react";
 import Login from "./components/Login";
 import StudentDashboard from "./components/StudentDashboard";
 import TeacherDashboard from "./components/TeacherDashboard";
-import { supabase } from "../supabaseClient";
-import TestSupabase from "./components/TestSupabase";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState<"student" | "teacher" | null>(null);
 
-  // Manejo de login
+  // Manejo de login → ahora solo llama al backend Express
   const handleLogin = async (
     role: "student" | "teacher",
-    nombre: string,
-    apellido: string,
+    nombreCompleto: string,
     grado: string,
     password: string,
   ) => {
-    const { data, error } = await supabase
-      .from("usuarios")
-      .select("*")
-      .eq("nombre", nombre)
-      .eq("apellido", apellido)
-      .eq("grado", grado)
-      .eq("password", password)
-      .eq("rol", role)
-      .single();
+    const res = await fetch("http://localhost:3001/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nombre_completo: nombreCompleto,
+        grado,
+        password,
+        rol: role,
+      }),
+    });
 
-    if (error || !data) {
-      alert("Usuario o contraseña incorrectos");
-    } else {
-      console.log("✅ Login exitoso:", data);
+    const data = await res.json();
+    if (data.success) {
+      console.log("✅ Login exitoso:", data.user);
       setUserRole(role);
       setIsLoggedIn(true);
+    } else {
+      alert(data.message || "Usuario o contraseña incorrectos");
     }
   };
 
   // Manejo de logout
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
     setIsLoggedIn(false);
     setUserRole(null);
   };
 
-  // Si no está logueado → mostrar Login + TestSupabase
+  // Si no está logueado → mostrar Login
   if (!isLoggedIn) {
-    return (
-      <>
-        <TestSupabase />
-        <Login
-          onLogin={(role, nombre, apellido, grado, password) =>
-            handleLogin(role, nombre, apellido, grado, password)
-          }
-        />
-      </>
-    );
+    return <Login onLogin={handleLogin} />;
   }
 
   // Dashboards según rol
