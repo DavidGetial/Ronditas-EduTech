@@ -1,14 +1,16 @@
-import { useState } from 'react';
-import { BookOpen, LogIn, GraduationCap, School } from 'lucide-react';
+import { useState } from "react";
+import { LogIn, GraduationCap, School } from "lucide-react";
 
 interface LoginProps {
-  onLogin: (role: 'student' | 'teacher') => void;
+  onLogin: (role: "student" | "teacher") => void;
 }
 
 export default function Login({ onLogin }: LoginProps) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [selectedRole, setSelectedRole] = useState<'student' | 'teacher'>('student');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [selectedRole, setSelectedRole] = useState<"student" | "teacher">(
+    "student",
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,11 +24,18 @@ export default function Login({ onLogin }: LoginProps) {
       <div className="w-full max-w-md">
         {/* Logo y Título */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-600 rounded-full mb-4 shadow-lg">
-            <BookOpen className="w-10 h-10 text-white" />
+          <div className="inline-flex items-center justify-center w-35 h-35 bg-blue-600 rounded-full mb-4 shadow-lg">
+            <img
+              src="/img/escudo.png"
+              alt="Escudo Escuela"
+              className="w-28 h-35 object-cover rounded-full"
+            />
           </div>
-          <h1 className="text-4xl font-bold text-blue-600 mb-2">Ronditas EduTech</h1>
-          <p className="text-gray-600">Plataforma educativa para grados 4° y 5°</p>
+
+          <h1 className="text-4xl font-bold text-blue-600 mb-2">
+            Ronditas EduTech
+          </h1>
+          <p className="text-gray-600">Plataforma educativa</p>
         </div>
 
         {/* Formulario de Login */}
@@ -34,15 +43,17 @@ export default function Login({ onLogin }: LoginProps) {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Selector de Rol */}
             <div>
-              <label className="block text-sm mb-3 text-gray-700">Ingresar como:</label>
+              <label className="block text-sm mb-3 text-gray-700">
+                Ingresar como:
+              </label>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  onClick={() => setSelectedRole('student')}
+                  onClick={() => setSelectedRole("student")}
                   className={`p-4 rounded-xl border-2 transition-all ${
-                    selectedRole === 'student'
-                      ? 'border-blue-600 bg-blue-50 text-blue-700'
-                      : 'border-gray-200 bg-white text-gray-600 hover:border-blue-300'
+                    selectedRole === "student"
+                      ? "border-blue-600 bg-blue-50 text-blue-700"
+                      : "border-gray-200 bg-white text-gray-600 hover:border-blue-300"
                   }`}
                 >
                   <GraduationCap className="w-8 h-8 mx-auto mb-2" />
@@ -50,11 +61,11 @@ export default function Login({ onLogin }: LoginProps) {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setSelectedRole('teacher')}
+                  onClick={() => setSelectedRole("teacher")}
                   className={`p-4 rounded-xl border-2 transition-all ${
-                    selectedRole === 'teacher'
-                      ? 'border-orange-500 bg-orange-50 text-orange-700'
-                      : 'border-gray-200 bg-white text-gray-600 hover:border-orange-300'
+                    selectedRole === "teacher"
+                      ? "border-orange-500 bg-orange-50 text-orange-700"
+                      : "border-gray-200 bg-white text-gray-600 hover:border-orange-300"
                   }`}
                 >
                   <School className="w-8 h-8 mx-auto mb-2" />
@@ -65,7 +76,10 @@ export default function Login({ onLogin }: LoginProps) {
 
             {/* Campo de Usuario */}
             <div>
-              <label htmlFor="username" className="block text-sm mb-2 text-gray-700">
+              <label
+                htmlFor="username"
+                className="block text-sm mb-2 text-gray-700"
+              >
                 Usuario
               </label>
               <input
@@ -81,7 +95,10 @@ export default function Login({ onLogin }: LoginProps) {
 
             {/* Campo de Contraseña */}
             <div>
-              <label htmlFor="password" className="block text-sm mb-2 text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm mb-2 text-gray-700"
+              >
                 Contraseña
               </label>
               <input
@@ -99,9 +116,9 @@ export default function Login({ onLogin }: LoginProps) {
             <button
               type="submit"
               className={`w-full py-3 px-6 rounded-lg font-medium text-white shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 ${
-                selectedRole === 'student'
-                  ? 'bg-blue-600 hover:bg-blue-700'
-                  : 'bg-orange-500 hover:bg-orange-600'
+                selectedRole === "student"
+                  ? "bg-blue-600 hover:bg-blue-700"
+                  : "bg-orange-500 hover:bg-orange-600"
               }`}
             >
               <LogIn className="w-5 h-5" />
