@@ -1,138 +1,159 @@
 import { useState, useEffect } from "react";
-import { LogIn, GraduationCap, School } from "lucide-react";
 
 interface LoginProps {
-  onLogin: (
-    role: "student" | "teacher",
-    nombreCompleto: string,
-    grado: string,
-    password: string,
-  ) => void;
+  onLogin: (user: any) => void;
 }
 
 export default function Login({ onLogin }: LoginProps) {
   const [grado, setGrado] = useState("");
   const [nombreCompleto, setNombreCompleto] = useState("");
   const [password, setPassword] = useState("");
-  const [selectedRole, setSelectedRole] = useState<"student" | "teacher">("student");
+  const [rol, setRol] = useState("student");
   const [gradosDisponibles, setGradosDisponibles] = useState<string[]>([]);
-  const [estudiantes, setEstudiantes] = useState<string[]>([]);
+  const [estudiantes, setEstudiantes] = useState<any[]>([]);
+  const [error, setError] = useState("");
 
+  // Cargar grados desde backend
   useEffect(() => {
     fetch("http://localhost:3001/grados")
       .then(res => res.json())
       .then(data => setGradosDisponibles(data))
-      .catch(err => console.error("Error cargando grados:", err));
+      .catch(() => setGradosDisponibles([]));
   }, []);
 
+  // Cargar estudiantes según grado
   useEffect(() => {
-    if (!grado || selectedRole !== "student") return;
-    fetch(`http://localhost:3001/estudiantes/${grado}`)
-      .then(res => res.json())
-      .then(data => {
-        const lista = data.map((u: any) => u.nombre_completo);
-        setEstudiantes(lista);
-      })
-      .catch(err => console.error("Error cargando estudiantes:", err));
-  }, [grado, selectedRole]);
+    if (grado) {
+      fetch(`http://localhost:3001/estudiantes/${grado}`)
+        .then(res => res.json())
+        .then(data => setEstudiantes(data))
+        .catch(() => setEstudiantes([]));
+    }
+  }, [grado]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin(selectedRole, nombreCompleto || "David Getial", grado, password);
+    setError("");
+
+    try {
+      const response = await fetch("http://localhost:3001/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre_completo: nombreCompleto,
+          grado,
+          password,
+          rol,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        setError(data.message || "Error en login");
+        return;
+      }
+
+      const data = await response.json();
+      if (data.success) {
+        onLogin(data.user); // 👈 solo pasamos el objeto user
+      } else {
+        setError(data.message || "Credenciales inválidas");
+      }
+    } catch (err) {
+      setError("Error de conexión con el servidor");
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="w-full max-w-md bg-white shadow-xl rounded-xl p-8">
-        <h1 className="text-3xl font-bold text-center text-indigo-700 mb-6">Ronditas EduTech</h1>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          
-          {/* Rol */}
-          <div className="flex justify-center gap-4 mb-4">
-            <button
-              type="button"
-              onClick={() => setSelectedRole("student")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition ${
-                selectedRole === "student"
-                  ? "bg-indigo-600 text-white border-indigo-600"
-                  : "bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200"
-              }`}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 to-white">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md space-y-6"
+      >
+        <h1 className="text-2xl font-bold text-indigo-700">Ingreso Ronditas EduTech</h1>
+
+        {/* Selección de rol */}
+        <div>
+          <label className="block text-gray-700">Rol</label>
+          <select
+            value={rol}
+            onChange={(e) => setRol(e.target.value)}
+            className="w-full border rounded-lg p-2"
+          >
+            <option value="student">Estudiante</option>
+            <option value="teacher">Docente</option>
+          </select>
+        </div>
+
+        {/* Selección de grado (solo estudiantes) */}
+        {rol === "student" && (
+          <div>
+            <label className="block text-gray-700">Grado</label>
+            <select
+              value={grado}
+              onChange={(e) => setGrado(e.target.value)}
+              className="w-full border rounded-lg p-2"
             >
-              <GraduationCap size={20} /> Alumno
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedRole("teacher")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition ${
-                selectedRole === "teacher"
-                  ? "bg-indigo-600 text-white border-indigo-600"
-                  : "bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200"
-              }`}
-            >
-              <School size={20} /> Maestro
-            </button>
+              <option value="">Seleccione grado</option>
+              {gradosDisponibles.map((g) => (
+                <option key={g} value={g}>
+                  {g}
+                </option>
+              ))}
+            </select>
           </div>
+        )}
 
-          {/* Si es estudiante → grados y nombres */}
-          {selectedRole === "student" && (
-            <>
-              <select
-                value={grado}
-                onChange={(e) => setGrado(e.target.value)}
-                required
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-              >
-                <option value="">Selecciona tu grado</option>
-                {gradosDisponibles.map((g) => (
-                  <option key={g} value={g}>{g}</option>
-                ))}
-              </select>
-
-              {grado && (
-                <select
-                  value={nombreCompleto}
-                  onChange={(e) => setNombreCompleto(e.target.value)}
-                  required
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-                >
-                  <option value="">Selecciona tu nombre</option>
-                  {estudiantes.map((est) => (
-                    <option key={est} value={est}>{est}</option>
-                  ))}
-                </select>
-              )}
-            </>
-          )}
-
-          {/* Si es maestro → nombre fijo */}
-          {selectedRole === "teacher" && (
+        {/* Selección de nombre */}
+        <div>
+          <label className="block text-gray-700">Nombre completo</label>
+          {rol === "student" ? (
+            <select
+              value={nombreCompleto}
+              onChange={(e) => setNombreCompleto(e.target.value)}
+              className="w-full border rounded-lg p-2"
+            >
+              <option value="">Seleccione estudiante</option>
+              {estudiantes.map((est) => (
+                <option key={est.id} value={est.nombre_completo}>
+                  {est.nombre_completo}
+                </option>
+              ))}
+            </select>
+          ) : (
             <input
               type="text"
-              value="David Getial"
-              readOnly
-              className="w-full px-3 py-2 border rounded-lg bg-gray-100"
+              value={nombreCompleto}
+              onChange={(e) => setNombreCompleto(e.target.value)}
+              className="w-full border rounded-lg p-2"
+              placeholder="Nombre completo"
             />
           )}
+        </div>
 
-          {/* Password */}
+        {/* Contraseña */}
+        <div>
+          <label className="block text-gray-700">Contraseña</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Contraseña"
-            required
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+            className="w-full border rounded-lg p-2"
+            placeholder="Ingrese su contraseña"
           />
+        </div>
 
-          {/* Botón */}
-          <button
-            type="submit"
-            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-blue-500 text-white font-semibold px-4 py-2 rounded-lg shadow-md hover:scale-105 transition-transform"
-          >
-            <LogIn size={20} /> Ingresar
-          </button>
-        </form>
-      </div>
+        {/* Error */}
+        {error && <p className="text-red-600 font-semibold">{error}</p>}
+
+        {/* Botón */}
+        <button
+          type="submit"
+          className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700"
+        >
+          Ingresar
+        </button>
+      </form>
     </div>
   );
 }
